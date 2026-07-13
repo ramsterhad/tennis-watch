@@ -24,9 +24,14 @@ async function scrapePlayer(player: PlayerConfig): Promise<PlayerResult> {
   const photoPath = await fetchPlayerPhoto(player);
 
   let nextMatch: PlayerResult["nextMatch"] = null;
+  let currentRank: PlayerResult["currentRank"] = null;
+  let country: PlayerResult["country"] = null;
   let error: string | undefined;
   try {
-    nextMatch = await scheduleSource.getNextMatch(player);
+    const info = await scheduleSource.getPlayerInfo(player);
+    nextMatch = info.nextMatch;
+    currentRank = info.currentRank;
+    country = info.country;
   } catch (err) {
     error = (err as Error).message;
     console.error(`[scraper] ${player.name}: ${error}`);
@@ -49,7 +54,7 @@ async function scrapePlayer(player: PlayerConfig): Promise<PlayerResult> {
     }
   }
 
-  return { player, nextMatch, broadcast, photoPath, error };
+  return { player, nextMatch, currentRank, country, broadcast, photoPath, error };
 }
 
 async function main(): Promise<void> {
