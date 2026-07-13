@@ -86,24 +86,47 @@ const scheduleSource = new PlaywrightSource();
 
 ## Deploy (Hetzner, Subdomain `tennis.ramsterhad.de`)
 
-Der Container lauscht intern auf Port 8080 (`docker-compose.yml` mappt ihn auf
-Host-Port 8080). Sobald klar ist, welcher Reverse Proxy auf dem Server läuft,
-reicht ein Vhost/Route, der `tennis.ramsterhad.de` auf `localhost:8080`
-weiterleitet, z. B. mit Caddy:
+Läuft dort **ohne Docker**, direkt auf dem Host (der Server hat schon nginx +
+mehrere andere ramsterhad.de-Subdomains, kein Docker) — Docker ist nur für
+lokales Testen. Setup unter `/var/www/tennis-watch`:
 
 ```
-tennis.ramsterhad.de {
-    reverse_proxy localhost:8080
-}
+git clone https://github.com/ramsterhad/tennis-watch.git /var/www/tennis-watch
+cd /var/www/tennis-watch
+npm ci
+npm run build
+npx playwright install --with-deps chromium
+node dist/scraper/index.js && node dist/site/build.js   # initial content
 ```
 
-oder mit nginx:
+nginx-Vhost (`/etc/nginx/sites-available/tennis.ramsterhad.de`, analog zu den
+anderen ramsterhad.de-Configs auf dem Server):
 
 ```
 server {
+    listen 80;
+    listen [::]:80;
     server_name tennis.ramsterhad.de;
-    location / {
-        proxy_pass http://localhost:8080;
-    }
+    root /var/www/tennis-watch/public;
+    index index.html;
+    location / { try_files $uri $uri/ =404; }
 }
 ```
+
+dann `ln -s .../sites-available/tennis.ramsterhad.de sites-enabled/`, `nginx -t`,
+`systemctl reload nginx`, und `certbot --nginx -d tennis.ramsterhad.de --redirect`
+für HTTPS.
+
+**Nächtlicher Cronjob**: als `/etc/cron.d/tennis-watch`, nicht als
+User-Crontab (`crontab -e`) — dieser Ubuntu-cron beachtet `CRON_TZ` nur in
+System-Crontabs (`/etc/cron.d/*`), nicht in User-Crontabs (empirisch getestet,
+nicht nur Doku geglaubt):
+
+```
+CRON_TZ=Europe/Berlin
+0 3 * * * root cd /var/www/tennis-watch && /usr/bin/node dist/scraper/index.js >> /var/log/tennis-watch.log 2>&1 && /usr/bin/node dist/site/build.js >> /var/log/tennis-watch.log 2>&1
+```
+
+**DNS-Falle**: `*.ramsterhad.de` hat einen Wildcard-Eintrag auf einen anderen
+Server (alfahosting). Für jede neue Subdomain auf dem Hetzner-Server braucht es
+einen expliziten A-Record, der den Wildcard für diese eine Subdomain überschreibt.
