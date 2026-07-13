@@ -1,0 +1,355 @@
+/* ---------------------------------------------------------------------
+   Tokens — grounded in the three tennis court surfaces (grass/clay/hard)
+   rather than a generic brand palette. Surface color is an information
+   carrier throughout: it tells you what kind of tennis you're looking at.
+------------------------------------------------------------------------ */
+:root {
+  --court-grass: #1f5c3e;
+  --court-grass-dark: #123826;
+  --court-clay: #c1603a;
+  --court-clay-dark: #8a4128;
+  --court-hard: #2b5fa3;
+  --court-hard-dark: #1d4176;
+  --ball: #d8e84b;
+  --ink: #16231c;
+  --ink-soft: #46564c;
+  --chalk: #faf9f4;
+  --chalk-dim: #f0eee4;
+  --line: #dfdccf;
+  --card-bg: #ffffff;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(22, 35, 28, 0.06), 0 6px 20px rgba(22, 35, 28, 0.07);
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eef1ec;
+    --ink-soft: #b7c2ba;
+    --chalk: #101a14;
+    --chalk-dim: #0b120e;
+    --line: #22301f;
+    --card-bg: #16211a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--chalk);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---------------------------------------------------------------------
+   Header — an "order of play" board: the sheet pinned up each morning at
+   a tournament listing who plays when.
+------------------------------------------------------------------------ */
+.board-header {
+  background: linear-gradient(160deg, var(--court-grass-dark), var(--court-grass) 70%);
+  color: var(--chalk);
+  padding: 2.75rem 1.5rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.board-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(250, 249, 244, 0.05) 0,
+    rgba(250, 249, 244, 0.05) 1px,
+    transparent 1px,
+    transparent 34px
+  );
+  pointer-events: none;
+}
+
+.board-header__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  position: relative;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  color: var(--ball);
+  margin: 0 0 0.6rem;
+}
+
+.board-header h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  margin: 0 0 0.5rem;
+}
+
+.board-header p {
+  margin: 0;
+  max-width: 40rem;
+  color: rgba(250, 249, 244, 0.82);
+  font-size: 0.98rem;
+}
+
+.board-header__meta {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: rgba(250, 249, 244, 0.7);
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.board-header__meta strong {
+  color: var(--chalk);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   Filter tabs
+------------------------------------------------------------------------ */
+.filters {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filters button {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink-soft);
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.filters button[aria-pressed="true"] {
+  background: var(--court-grass);
+  border-color: var(--court-grass);
+  color: var(--chalk);
+}
+
+.filters button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--court-hard);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------
+   Card grid
+------------------------------------------------------------------------ */
+.grid {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-top: 5px solid var(--surface-color, var(--ink-soft));
+}
+
+.card[data-has-match="false"] {
+  opacity: 0.72;
+}
+
+.card__body {
+  padding: 1.1rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 1;
+}
+
+.card__player {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.card__photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--chalk-dim);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.card__photo--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+}
+
+.card__name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.card__tour {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.card__surface {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--surface-color, var(--ink-soft));
+  font-weight: 600;
+}
+
+.card__match {
+  border-top: 1px dashed var(--line);
+  padding-top: 0.8rem;
+}
+
+.card__tournament {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0 0 0.15rem;
+}
+
+.card__round {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.5rem;
+}
+
+.card__vs {
+  font-size: 0.92rem;
+  margin: 0 0 0.45rem;
+}
+
+.card__time {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  background: var(--chalk-dim);
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  display: inline-block;
+}
+
+.card__empty {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.card__broadcast {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.28rem 0.55rem;
+  border-radius: 6px;
+  background: var(--chalk-dim);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.card__error {
+  font-size: 0.8rem;
+  color: var(--court-clay);
+}
+
+/* ---------------------------------------------------------------------
+   Footer
+------------------------------------------------------------------------ */
+.site-footer {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.site-footer a {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+}
+
+@media (max-width: 420px) {
+  .board-header {
+    padding: 2rem 1.1rem 1.75rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    padding: 1.25rem 1.1rem 2.5rem;
+  }
+  .filters {
+    padding: 1.25rem 1.1rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+  }
+}

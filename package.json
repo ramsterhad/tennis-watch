@@ -1,0 +1,24 @@
+{
+  "name": "tennis-watch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Übersichtsseite für die nächsten Matches ausgewählter Tennisspieler inkl. Übertragungsinfo (DE)",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "scrape": "node dist/scraper/index.js",
+    "site": "node dist/site/build.js",
+    "refresh": "npm run scrape && npm run site",
+    "dev:refresh": "tsc -p tsconfig.json && npm run refresh"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "luxon": "^3.5.0",
+    "playwright": "1.61.1"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

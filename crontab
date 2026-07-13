@@ -1,0 +1,2 @@
+CRON_TZ=Europe/Berlin
+0 3 * * * cd /app && node dist/scraper/index.js && node dist/site/build.js
