@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - tennis-data:/app/data
+      - tennis-images:/app/public/images
+    restart: unless-stopped
+
+volumes:
+  tennis-data:
+  tennis-images:

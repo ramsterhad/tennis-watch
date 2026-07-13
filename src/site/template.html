@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nächste Spiele — Tennis-Übersicht</title>
+<meta name="description" content="Wann spielen deine Tennisspieler als Nächstes — und wo läuft es im TV oder Stream." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="board-header">
+  <div class="board-header__inner">
+    <p class="eyebrow">Order of Play &middot; Nächste Spiele</p>
+    <h1>Wer spielt wann?</h1>
+    <p>Die nächsten Matches ausgewählter ATP- und WTA-Spieler:innen — inklusive Übertragung in Deutschland, sofern bekannt.</p>
+    <div class="board-header__meta">
+      <span>Stand: <strong>{{GENERATED_AT}}</strong></span>
+      <span><strong>{{COUNT_TOTAL}}</strong> Spieler:innen beobachtet</span>
+    </div>
+  </div>
+</header>
+
+<nav class="filters" role="tablist" aria-label="Nach Tour filtern">
+  <button type="button" data-filter="all" aria-pressed="true">Alle</button>
+  <button type="button" data-filter="ATP" aria-pressed="false">Herren</button>
+  <button type="button" data-filter="WTA" aria-pressed="false">Damen</button>
+</nav>
+
+<main class="grid" id="grid">
+{{CARDS}}
+</main>
+
+<footer class="site-footer">
+  <p>
+    Spieltermine: <a href="https://www.tennisexplorer.com" target="_blank" rel="noopener">tennisexplorer.com</a>.
+    Spielerfotos: <a href="https://www.wikipedia.org" target="_blank" rel="noopener">Wikipedia</a> (Wikimedia Commons, jeweilige Lizenz der Aufnahme).
+    Senderangaben basieren auf den aktuell bekannten Übertragungsverträgen für Deutschland und werden nicht für jedes einzelne Match einzeln bestätigt —
+    kurzfristige Änderungen sind möglich. Diese Seite aktualisiert sich automatisch einmal pro Nacht.
+  </p>
+</footer>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll(".filters button");
+  var cards = document.querySelectorAll(".card");
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      btn.setAttribute("aria-pressed", "true");
+      var filter = btn.getAttribute("data-filter");
+      cards.forEach(function (card) {
+        var show = filter === "all" || card.getAttribute("data-tour") === filter;
+        card.style.display = show ? "" : "none";
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

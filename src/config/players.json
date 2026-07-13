@@ -1,0 +1,130 @@
+[
+  {
+    "id": "sinner",
+    "name": "Jannik Sinner",
+    "tour": "ATP",
+    "tennisExplorerSlug": "sinner-8b8e8",
+    "wikipediaTitle": "Jannik Sinner",
+    "addedReason": "Wimbledon 2026 champion (from QF)"
+  },
+  {
+    "id": "zverev",
+    "name": "Alexander Zverev",
+    "tour": "ATP",
+    "tennisExplorerSlug": "zverev-6f768",
+    "wikipediaTitle": "Alexander Zverev",
+    "addedReason": "Wimbledon 2026 runner-up (from QF)"
+  },
+  {
+    "id": "auger-aliassime",
+    "name": "Félix Auger-Aliassime",
+    "tour": "ATP",
+    "tennisExplorerSlug": "auger-aliassime",
+    "wikipediaTitle": "Félix Auger-Aliassime",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "djokovic",
+    "name": "Novak Djokovic",
+    "tour": "ATP",
+    "tennisExplorerSlug": "djokovic",
+    "wikipediaTitle": "Novak Djokovic",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "fritz",
+    "name": "Taylor Fritz",
+    "tour": "ATP",
+    "tennisExplorerSlug": "fritz-f1aa7",
+    "wikipediaTitle": "Taylor Fritz",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "cobolli",
+    "name": "Flavio Cobolli",
+    "tour": "ATP",
+    "tennisExplorerSlug": "cobolli-d6311",
+    "wikipediaTitle": "Flavio Cobolli",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "fery",
+    "name": "Arthur Fery",
+    "tour": "ATP",
+    "tennisExplorerSlug": "fery",
+    "wikipediaTitle": "Arthur Fery",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "struff",
+    "name": "Jan-Lennard Struff",
+    "tour": "ATP",
+    "tennisExplorerSlug": "struff",
+    "wikipediaTitle": "Jan-Lennard Struff",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "noskova",
+    "name": "Linda Nosková",
+    "tour": "WTA",
+    "tennisExplorerSlug": "noskova",
+    "wikipediaTitle": "Linda Nosková",
+    "addedReason": "Wimbledon 2026 champion (from QF)"
+  },
+  {
+    "id": "muchova",
+    "name": "Karolína Muchová",
+    "tour": "WTA",
+    "tennisExplorerSlug": "muchova",
+    "wikipediaTitle": "Karolína Muchová",
+    "addedReason": "Wimbledon 2026 runner-up (from QF)"
+  },
+  {
+    "id": "gauff",
+    "name": "Coco Gauff",
+    "tour": "WTA",
+    "tennisExplorerSlug": "gauff",
+    "wikipediaTitle": "Coco Gauff",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "kostyuk",
+    "name": "Marta Kostyuk",
+    "tour": "WTA",
+    "tennisExplorerSlug": "kostyuk-ea2bf",
+    "wikipediaTitle": "Marta Kostyuk",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "osaka",
+    "name": "Naomi Osaka",
+    "tour": "WTA",
+    "tennisExplorerSlug": "osaka-fa603",
+    "wikipediaTitle": "Naomi Osaka",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "pegula",
+    "name": "Jessica Pegula",
+    "tour": "WTA",
+    "tennisExplorerSlug": "pegula",
+    "wikipediaTitle": "Jessica Pegula",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "paolini",
+    "name": "Jasmine Paolini",
+    "tour": "WTA",
+    "tennisExplorerSlug": "paolini-4af25",
+    "wikipediaTitle": "Jasmine Paolini",
+    "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "mertens",
+    "name": "Elise Mertens",
+    "tour": "WTA",
+    "tennisExplorerSlug": "mertens-f8826",
+    "wikipediaTitle": "Elise Mertens",
+    "addedReason": "Wimbledon 2026 QF"
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "_comment": "Sender-Zuordnung für Deutschland. 'match' wird als case-insensitive Teilstring gegen den Turniernamen geprüft, erster Treffer gewinnt. Diese Rechte sind langfristige Verträge, keine Tagesdaten – bei Vertragswechseln hier anpassen.",
+  "rules": [
+    {
+      "match": "Wimbledon",
+      "broadcasters": ["Amazon Prime Video"],
+      "note": "Exklusiv bis 2027"
+    },
+    {
+      "match": "Australian Open",
+      "broadcasters": ["Eurosport"],
+      "note": "Bitte vor Turnierstart 2027 prüfen/aktualisieren"
+    },
+    {
+      "match": "Roland Garros",
+      "broadcasters": ["Eurosport"],
+      "note": "Bitte vor Turnierstart 2027 prüfen/aktualisieren"
+    },
+    {
+      "match": "French Open",
+      "broadcasters": ["Eurosport"],
+      "note": "Bitte vor Turnierstart 2027 prüfen/aktualisieren"
+    },
+    {
+      "match": "US Open",
+      "broadcasters": ["Sky"],
+      "note": "Bitte vor Turnierstart 2027 prüfen/aktualisieren"
+    },
+    {
+      "match": "ATP Finals",
+      "broadcasters": ["Sky"],
+      "note": "Sky-ATP-Vertrag bis 2033"
+    },
+    {
+      "match": "WTA Finals",
+      "broadcasters": ["Sky", "Eurosport"]
+    }
+  ],
+  "defaultByTour": {
+    "ATP": ["Sky"],
+    "WTA": ["Sky", "Eurosport"]
+  }
+}
