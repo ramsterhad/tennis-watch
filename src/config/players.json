@@ -126,5 +126,21 @@
     "tennisExplorerSlug": "mertens-f8826",
     "wikipediaTitle": "Elise Mertens",
     "addedReason": "Wimbledon 2026 QF"
+  },
+  {
+    "id": "tsitsipas",
+    "name": "Stefanos Tsitsipas",
+    "tour": "ATP",
+    "tennisExplorerSlug": "tsitsipas-b526f",
+    "wikipediaTitle": "Stefanos Tsitsipas",
+    "addedReason": "Beispiel-Spieler mit anstehendem Match (Gstaad 2026)"
+  },
+  {
+    "id": "cerundolo",
+    "name": "Francisco Cerundolo",
+    "tour": "ATP",
+    "tennisExplorerSlug": "cerundolo-08df6",
+    "wikipediaTitle": "Francisco Cerundolo",
+    "addedReason": "Beispiel-Spieler mit anstehendem Match (Gstaad 2026)"
   }
 ]

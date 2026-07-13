@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { NextMatch, PlayerConfig } from "../types";
+import { PlayerConfig, ScrapedPlayerInfo } from "../types";
 import { ScheduleSource } from "./source";
 import { TENNIS_EXPLORER_USER_AGENT, parsePlayerPage, playerProfileUrl } from "./parseTennisExplorer";
 
@@ -11,7 +11,7 @@ import { TENNIS_EXPLORER_USER_AGENT, parsePlayerPage, playerProfileUrl } from ".
  * is a one-line change in scraper/index.ts since both implement ScheduleSource.
  */
 export class PlaywrightSource implements ScheduleSource {
-  async getNextMatch(player: PlayerConfig): Promise<NextMatch | null> {
+  async getPlayerInfo(player: PlayerConfig): Promise<ScrapedPlayerInfo> {
     const browser = await chromium.launch();
     try {
       const page = await browser.newPage({ userAgent: TENNIS_EXPLORER_USER_AGENT });

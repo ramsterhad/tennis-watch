@@ -215,6 +215,9 @@ a:focus-visible {
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
+  /* Wikipedia infobox photos are usually tall portrait/action shots with the
+     face near the top — a centered cover-crop tends to cut the head off. */
+  object-position: 50% 15%;
   background: var(--chalk-dim);
   border: 1px solid var(--line);
   flex-shrink: 0;
@@ -235,6 +238,13 @@ a:focus-visible {
   font-weight: 600;
   margin: 0;
   letter-spacing: 0.01em;
+}
+
+.card__name a,
+.card__vs a {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 2px;
 }
 
 .card__tour {
@@ -260,25 +270,40 @@ a:focus-visible {
 }
 
 .card__tournament {
+  /* Styled like the surface/broadcast chips elsewhere on the card — a tag reads
+     as "metadata about the match", keeping it visually distinct from the vs-line
+     headline below, which is the actual fact ("who"). */
+  display: inline-block;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   font-weight: 600;
-  font-size: 0.95rem;
-  margin: 0 0 0.15rem;
-}
-
-.card__round {
-  font-size: 0.82rem;
+  font-size: 0.65rem;
   color: var(--ink-soft);
+  background: var(--chalk-dim);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
   margin: 0 0 0.5rem;
 }
 
 .card__vs {
-  font-size: 0.92rem;
-  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.7rem;
+}
+
+.card__logistics {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .card__time {
   font-family: var(--font-mono);
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   background: var(--chalk-dim);
   border-radius: 6px;
   padding: 0.35rem 0.6rem;
@@ -289,13 +314,6 @@ a:focus-visible {
   font-size: 0.88rem;
   color: var(--ink-soft);
   font-style: italic;
-}
-
-.card__broadcast {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.2rem;
 }
 
 .chip {

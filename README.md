@@ -1,6 +1,6 @@
 # tennis-watch
 
-Zeigt, wann die nächsten Matches ausgewählter ATP-/WTA-Spieler:innen sind und
+Zeigt, wann die nächsten Matches ausgewählter ATP-/WTA-Spieler sind und
 (sofern bekannt) wo man sie in Deutschland sehen kann. Läuft als ein einziger
 Docker-Container, aktualisiert sich einmal pro Nacht selbst (03:00 Europe/Berlin)
 und braucht keinen Account/Login.

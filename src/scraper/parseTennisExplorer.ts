@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
+import type { CheerioAPI } from "cheerio";
 import { DateTime } from "luxon";
-import { NextMatch, PlayerConfig } from "../types";
+import { NextMatch, PlayerConfig, ScrapedPlayerInfo } from "../types";
 
 export const TENNIS_EXPLORER_USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
@@ -39,14 +40,14 @@ function parseStart(raw: string): { iso: string | null; display: string } {
   return { iso: candidate.isValid ? candidate.toISO() : null, display };
 }
 
-/**
- * Parses a tennisexplorer.com player-profile page (raw HTML, however it was fetched)
- * into a NextMatch. Shared by both the plain-HTTP source and the Playwright fallback
- * so the two only differ in how they obtain the HTML, not in how they read it.
- */
-export function parsePlayerPage(html: string, player: PlayerConfig): NextMatch | null {
-  const $ = cheerio.load(html);
+const TENNIS_EXPLORER_ORIGIN = "https://www.tennisexplorer.com";
 
+function absoluteUrl(href: string | undefined): string | null {
+  if (!href) return null;
+  return href.startsWith("http") ? href : `${TENNIS_EXPLORER_ORIGIN}${href}`;
+}
+
+function parseNextMatch($: CheerioAPI, player: PlayerConfig): NextMatch | null {
   const table = $("table.result.gamedetail").first();
   if (table.length === 0) {
     throw new Error(`Konnte "Next match"-Tabelle für ${player.name} nicht finden (Seitenstruktur geändert?)`);
@@ -57,7 +58,9 @@ export function parsePlayerPage(html: string, player: PlayerConfig): NextMatch |
     return null;
   }
 
-  const tournament = row.find("td.tl a").first().text().trim();
+  const tournamentLink = row.find("td.tl a").first();
+  const tournament = tournamentLink.text().trim();
+  const tournamentUrl = absoluteUrl(tournamentLink.attr("href"));
 
   // Bracket not fully drawn yet: tennisexplorer collapses round/start/match into
   // one "Next opponent is not known yet" cell instead of the usual 4 columns.
@@ -65,16 +68,20 @@ export function parsePlayerPage(html: string, player: PlayerConfig): NextMatch |
   if (pendingCell.length > 0) {
     return {
       tournament: tournament || "Unbekanntes Turnier",
+      tournamentUrl,
       round: "Auslosung offen",
       startTime: null,
       startDisplay: "Termin steht noch nicht fest",
       opponent: "noch offen",
+      matchUrl: null,
     };
   }
 
   const round = row.find("td[title]").first().text().trim();
   const startRaw = row.find("td.time").first().text();
-  const matchText = row.find("th.t-name a").first().text().trim();
+  const matchLink = row.find("th.t-name a").first();
+  const matchText = matchLink.text().trim();
+  const matchUrl = absoluteUrl(matchLink.attr("href"));
 
   const { iso, display } = parseStart(startRaw);
 
@@ -92,10 +99,47 @@ export function parsePlayerPage(html: string, player: PlayerConfig): NextMatch |
 
   return {
     tournament: tournament || "Unbekanntes Turnier",
+    tournamentUrl,
     round: round || "-",
     startTime: iso,
     startDisplay: display,
     opponent: opponent || "TBD",
+    matchUrl,
+  };
+}
+
+/** Reads "Current/Highest rank - singles: 4. / 2." from the player-info box; returns the current figure. */
+function parseCurrentRank($: CheerioAPI): number | null {
+  const text = $(".box.boxBasic .date")
+    .filter((_, el) => $(el).text().includes("Current/Highest rank - singles"))
+    .first()
+    .text();
+  const match = text.match(/singles:\s*(\d+)\s*\./);
+  return match ? Number(match[1]) : null;
+}
+
+/** Reads "Country: Italy" from the player-info box. */
+function parseCountry($: CheerioAPI): string | null {
+  const text = $(".box.boxBasic .date")
+    .filter((_, el) => $(el).text().trim().startsWith("Country:"))
+    .first()
+    .text();
+  const match = text.match(/Country:\s*(.+)/);
+  return match ? match[1].trim() : null;
+}
+
+/**
+ * Parses a tennisexplorer.com player-profile page (raw HTML, however it was fetched)
+ * into next-match + ranking info. Shared by both the plain-HTTP source and the
+ * Playwright fallback so the two only differ in how they obtain the HTML, not in
+ * how they read it.
+ */
+export function parsePlayerPage(html: string, player: PlayerConfig): ScrapedPlayerInfo {
+  const $ = cheerio.load(html);
+  return {
+    nextMatch: parseNextMatch($, player),
+    currentRank: parseCurrentRank($),
+    country: parseCountry($),
   };
 }
 

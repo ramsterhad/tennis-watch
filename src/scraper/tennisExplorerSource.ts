@@ -1,4 +1,4 @@
-import { NextMatch, PlayerConfig } from "../types";
+import { PlayerConfig, ScrapedPlayerInfo } from "../types";
 import { ScheduleSource } from "./source";
 import { TENNIS_EXPLORER_USER_AGENT, parsePlayerPage, playerProfileUrl } from "./parseTennisExplorer";
 
@@ -9,7 +9,7 @@ import { TENNIS_EXPLORER_USER_AGENT, parsePlayerPage, playerProfileUrl } from ".
  * protection), swap in PlaywrightSource — it implements the same interface.
  */
 export class TennisExplorerSource implements ScheduleSource {
-  async getNextMatch(player: PlayerConfig): Promise<NextMatch | null> {
+  async getPlayerInfo(player: PlayerConfig): Promise<ScrapedPlayerInfo> {
     const url = playerProfileUrl(player);
     const res = await fetch(url, { headers: { "User-Agent": TENNIS_EXPLORER_USER_AGENT } });
     if (!res.ok) {
