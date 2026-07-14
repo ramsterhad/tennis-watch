@@ -293,13 +293,14 @@ span.schedule__name {
 
 .schedule__cell--event {
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: baseline;
   flex-wrap: nowrap;
   gap: 0.35rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .schedule__tournament {
@@ -322,6 +323,7 @@ span.schedule__name {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   white-space: nowrap;
+  text-align: center;
 }
 
 .schedule__cell--broadcast {
@@ -346,6 +348,11 @@ span.schedule__name {
   background: var(--chalk-dim);
   border: 1px solid var(--line);
   color: var(--ink);
+  text-decoration: none;
+}
+
+a.chip:hover {
+  border-color: var(--surface-color, var(--ink-soft));
 }
 
 .schedule__error {

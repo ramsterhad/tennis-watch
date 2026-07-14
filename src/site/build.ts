@@ -12,6 +12,22 @@ const TEMPLATE_FILE = path.join(SRC_SITE_DIR, "template.html");
 const STYLE_FILE = path.join(SRC_SITE_DIR, "style.css");
 const PUBLIC_DIR = path.join(__dirname, "..", "..", "public");
 
+/** Homepage/live-hub for each broadcaster in src/config/broadcasters.json — not deep
+ *  links to a specific match (those aren't known ahead of time), just where to start. */
+const BROADCASTER_URL: Record<string, string> = {
+  Sky: "https://www.skysport.de/tennis",
+  DAZN: "https://www.dazn.com/de-DE",
+  "Amazon Prime Video": "https://www.amazon.de/gp/video/storefront",
+  "Amazon Prime": "https://www.amazon.de/gp/video/storefront",
+  "Prime Video": "https://www.amazon.de/gp/video/storefront",
+  ARD: "https://www.ard.de/live",
+  ZDF: "https://www.zdf.de/live-tv",
+  Eurosport: "https://www.eurosport.de/tennis/",
+  Sport1: "https://www.sport1.de/live-tv",
+  MagentaSport: "https://www.magentasport.de/",
+  WOW: "https://www.wow.de/sport",
+};
+
 type Surface = "grass" | "clay" | "hard";
 
 const GRASS_KEYWORDS = ["wimbledon", "queen's", "queens", "halle", "s-hertogenbosch", "newport", "eastbourne", "birmingham", "mallorca"];
@@ -184,7 +200,14 @@ function renderRow(result: PlayerResult): string {
     dateCell = `<span role="cell" class="schedule__cell schedule__cell--date">${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}</span>`;
 
     const broadcastChips = broadcast && broadcast.broadcasters.length > 0
-      ? broadcast.broadcasters.map((b) => `<span class="chip">${escapeHtml(b)}</span>`).join("")
+      ? broadcast.broadcasters
+          .map((b) => {
+            const url = BROADCASTER_URL[b];
+            return url
+              ? `<a class="chip" href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(b)}</a>`
+              : `<span class="chip">${escapeHtml(b)}</span>`;
+          })
+          .join("")
       : `<span class="chip">Sender unbekannt</span>`;
     broadcastCell = `<span role="cell" class="schedule__cell schedule__cell--broadcast">${broadcastChips}</span>`;
   }
