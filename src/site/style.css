@@ -378,9 +378,11 @@ a.chip:hover {
 }
 
 /* ---------------------------------------------------------------------
-   Small screens — the six-column grid collapses into stacked key/value
-   rows per player; column labels come back as generated content since
-   the header row (sticky, meant for a wide layout) is hidden here.
+   Small screens — the six-column grid collapses into compact cards: a
+   photo+name header row, then Kontrahent/Event/Datum/Wo-läuft's packed
+   into one tight four-column mini-row underneath (own label per field,
+   generated content — the header row is sized for the wide layout and
+   is hidden here).
 ------------------------------------------------------------------------ */
 @media (max-width: 720px) {
   .schedule {
@@ -394,14 +396,14 @@ a.chip:hover {
   }
   .schedule__row {
     display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: 0.9rem;
-    row-gap: 0.5rem;
+    grid-template-columns: auto repeat(4, 1fr);
+    column-gap: 0.5rem;
+    row-gap: 0.6rem;
     background: var(--card-bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 1rem 1.1rem;
-    margin-bottom: 0.9rem;
+    padding: 0.85rem 0.9rem;
+    margin-bottom: 0.7rem;
   }
   .schedule__row--head {
     display: none;
@@ -410,31 +412,49 @@ a.chip:hover {
     padding: 0;
     background: none;
     border-bottom: none;
+    font-size: 0.8rem;
   }
   .schedule__cell--photo {
+    grid-column: 1;
+    grid-row: 1;
     border-left: none;
-    padding-left: 0.6rem;
+    padding-left: 0.5rem;
     box-shadow: inset 4px 0 0 var(--surface-color, transparent);
   }
   .schedule__cell--player {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+  .schedule__cell--opponent {
     grid-column: 2;
+    grid-row: 2;
+  }
+  .schedule__cell--event {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .schedule__cell--date {
+    grid-column: 4;
+    grid-row: 2;
+  }
+  .schedule__cell--broadcast {
+    grid-column: 5;
+    grid-row: 2;
+  }
+  .schedule__cell--wide {
+    grid-column: 2 / -1;
+    grid-row: 2;
   }
   .schedule__cell--opponent,
   .schedule__cell--event,
   .schedule__cell--date,
-  .schedule__cell--broadcast,
-  .schedule__cell--wide {
-    grid-column: 1 / -1;
-  }
-  .schedule__cell--opponent,
-  .schedule__cell--event {
-    flex-wrap: wrap;
-    row-gap: 0.15rem;
+  .schedule__cell--broadcast {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
     white-space: normal;
-  }
-  .schedule__cell--opponent::before,
-  .schedule__cell--event::before {
-    flex-basis: 100%;
+    gap: 0.1rem;
   }
   .schedule__cell--opponent::before {
     content: "Kontrahent";
@@ -453,14 +473,20 @@ a.chip:hover {
   .schedule__cell--date::before,
   .schedule__cell--broadcast::before {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: var(--ink-soft);
   }
+  .schedule__cell--opponent .schedule__name,
+  .schedule__cell--event .schedule__tournament {
+    font-size: 0.72rem;
+  }
+  .schedule__cell--date {
+    font-size: 0.72rem;
+  }
   .schedule__cell--broadcast {
-    flex-direction: column;
-    align-items: flex-start;
+    gap: 0.25rem;
   }
 }
 
