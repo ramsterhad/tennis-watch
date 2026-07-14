@@ -115,13 +115,6 @@ img {
   margin: 0 0 0.5rem;
 }
 
-.board-header p {
-  margin: 0;
-  max-width: 40rem;
-  color: rgba(250, 249, 244, 0.82);
-  font-size: 0.98rem;
-}
-
 .board-header__meta {
   margin-top: 1.5rem;
   font-family: var(--font-mono);
