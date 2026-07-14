@@ -73,6 +73,7 @@ function parseNextMatch($: CheerioAPI, player: PlayerConfig): NextMatch | null {
       startTime: null,
       startDisplay: "Termin steht noch nicht fest",
       opponent: "noch offen",
+      opponentRank: null,
       matchUrl: null,
     };
   }
@@ -104,8 +105,40 @@ function parseNextMatch($: CheerioAPI, player: PlayerConfig): NextMatch | null {
     startTime: iso,
     startDisplay: display,
     opponent: opponent || "TBD",
+    opponentRank: null,
     matchUrl,
   };
+}
+
+/**
+ * The "Next match" row only links to the match-detail page (both players' names
+ * combined in one link, e.g. "Baiant R. - Prachar J."), not to the opponent's own
+ * profile — so their ranking isn't available yet at this point. This reads the
+ * match-detail page's player links (the first two "/player/<slug>" links, before
+ * the "?annual=" stats links further down) and returns whichever one isn't `player`,
+ * so the caller can fetch that profile page and read their rank the normal way.
+ */
+export function extractOpponentSlug(matchDetailHtml: string, player: PlayerConfig): string | null {
+  const $ = cheerio.load(matchDetailHtml);
+  const surname = lastNameOf(player.name);
+  const links = $('a[href^="/player/"]')
+    .filter((_, el) => !(el.attribs.href || "").includes("?"))
+    .toArray()
+    .slice(0, 2);
+
+  for (const el of links) {
+    const href = $(el).attr("href") || "";
+    const name = $(el).text().trim();
+    if (stripDiacritics(name).toLowerCase().includes(surname)) continue;
+    const slug = href.replace(/^\/player\//, "").replace(/\/$/, "");
+    if (slug) return slug;
+  }
+  return null;
+}
+
+/** Reads a player's current rank straight off their (already-fetched) profile page HTML. */
+export function parseRankFromProfileHtml(html: string): number | null {
+  return parseCurrentRank(cheerio.load(html));
 }
 
 /** Reads "Current/Highest rank - singles: 4. / 2." from the player-info box; returns the current figure. */

@@ -29,8 +29,18 @@
   <button type="button" data-filter="WTA" aria-pressed="false">Damen</button>
 </nav>
 
-<main class="grid" id="grid">
-{{CARDS}}
+<main class="schedule">
+  <div class="schedule__grid" id="schedule" role="table" aria-label="Nächste Spiele">
+    <div class="schedule__row schedule__row--head" role="row">
+      <span role="columnheader" class="schedule__cell"></span>
+      <span role="columnheader" class="schedule__cell">Spieler</span>
+      <span role="columnheader" class="schedule__cell">Kontrahent</span>
+      <span role="columnheader" class="schedule__cell">Event</span>
+      <span role="columnheader" class="schedule__cell">Datum</span>
+      <span role="columnheader" class="schedule__cell">Wo läuft's</span>
+    </div>
+{{ROWS}}
+  </div>
 </main>
 
 <footer class="site-footer">
@@ -45,15 +55,15 @@
 <script>
 (function () {
   var buttons = document.querySelectorAll(".filters button");
-  var cards = document.querySelectorAll(".card");
+  var rows = document.querySelectorAll(".schedule__row[data-tour]");
   buttons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       buttons.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
       btn.setAttribute("aria-pressed", "true");
       var filter = btn.getAttribute("data-filter");
-      cards.forEach(function (card) {
-        var show = filter === "all" || card.getAttribute("data-tour") === filter;
-        card.style.display = show ? "" : "none";
+      rows.forEach(function (row) {
+        var show = filter === "all" || row.getAttribute("data-tour") === filter;
+        row.style.display = show ? "" : "none";
       });
     });
   });
