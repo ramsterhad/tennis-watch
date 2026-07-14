@@ -101,7 +101,7 @@ function inferSurface(tournament: string): Surface {
   return "hard";
 }
 
-const SURFACE_LABEL: Record<Surface, string> = { grass: "Gras", clay: "Sand", hard: "Hartplatz" };
+const SURFACE_LABEL: Record<Surface, string> = { grass: "Gras", clay: "Sand", hard: "Halle" };
 const SURFACE_VAR: Record<Surface, string> = {
   grass: "var(--court-grass)",
   clay: "var(--court-clay)",
@@ -128,14 +128,14 @@ function initialsOf(name: string): string {
 
 function formatMatchTime(iso: string | null, fallbackDisplay: string): string {
   if (!iso) {
-    return fallbackDisplay || "Termin steht noch nicht fest";
+    return fallbackDisplay || "Termin offen";
   }
   const dt = DateTime.fromISO(iso).setZone("Europe/Berlin");
   const weekday = dt.setLocale("de").toFormat("ccc");
-  return `${weekday}. ${dt.toFormat("dd.MM.")} · ${dt.toFormat("HH:mm")} Uhr`;
+  return `${weekday}. ${dt.toFormat("dd.MM.")} · ${dt.toFormat("HH:mm")}`;
 }
 
-function renderRow(result: PlayerResult, isNext: boolean): string {
+function renderRow(result: PlayerResult): string {
   const { player, nextMatch, currentRank, country, broadcast, photoPath, error } = result;
   const surface = nextMatch ? inferSurface(nextMatch.tournament) : null;
   const rowStyle = surface ? `style="--surface-color:${SURFACE_VAR[surface]}"` : "";
@@ -146,11 +146,11 @@ function renderRow(result: PlayerResult, isNext: boolean): string {
 
   const playerLink = playerProfileUrl(player);
   const code = countryCode(country);
-  const playerMetaParts = [code ? escapeHtml(code) : null, currentRank ? `#${currentRank}` : null].filter(Boolean) as string[];
   const playerCell = `
     <span role="cell" class="schedule__cell schedule__cell--player">
       <a class="schedule__name" href="${escapeHtml(playerLink)}" target="_blank" rel="noopener">${escapeHtml(player.name)}</a>
-      ${playerMetaParts.length > 0 ? `<span class="schedule__meta">${playerMetaParts.join(" &middot; ")}</span>` : ""}
+      ${currentRank ? `<span class="schedule__rank">${currentRank}</span>` : ""}
+      ${code ? `<span class="schedule__country">${escapeHtml(code)}</span>` : ""}
     </span>`;
 
   let opponentCell: string;
@@ -170,7 +170,7 @@ function renderRow(result: PlayerResult, isNext: boolean): string {
     opponentCell = `
       <span role="cell" class="schedule__cell schedule__cell--player schedule__cell--opponent">
         ${opponentLabel}
-        ${opponentRank ? `<span class="schedule__meta">#${opponentRank}</span>` : ""}
+        ${opponentRank ? `<span class="schedule__rank">${opponentRank}</span>` : ""}
       </span>`;
 
     const tournamentLabel = nextMatch.tournamentUrl
@@ -178,15 +178,10 @@ function renderRow(result: PlayerResult, isNext: boolean): string {
       : `<span class="schedule__tournament">${escapeHtml(nextMatch.tournament)}</span>`;
     eventCell = `
       <span role="cell" class="schedule__cell schedule__cell--event">
-        ${tournamentLabel}
-        ${surface ? `<span class="schedule__surface">${SURFACE_LABEL[surface]}</span>` : ""}
+        ${tournamentLabel}${surface ? ` <span class="schedule__surface">(${SURFACE_LABEL[surface]})</span>` : ""}
       </span>`;
 
-    dateCell = `
-      <span role="cell" class="schedule__cell schedule__cell--date">
-        ${isNext ? `<span class="schedule__badge">Nächstes</span>` : ""}
-        ${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}
-      </span>`;
+    dateCell = `<span role="cell" class="schedule__cell schedule__cell--date">${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}</span>`;
 
     const broadcastChips = broadcast && broadcast.broadcasters.length > 0
       ? broadcast.broadcasters.map((b) => `<span class="chip">${escapeHtml(b)}</span>`).join("")
@@ -195,7 +190,7 @@ function renderRow(result: PlayerResult, isNext: boolean): string {
   }
 
   return `
-    <div class="schedule__row${isNext ? " schedule__row--next" : ""}" role="row" data-tour="${player.tour}" data-has-match="${Boolean(nextMatch)}" ${rowStyle}>
+    <div class="schedule__row" role="row" data-tour="${player.tour}" data-has-match="${Boolean(nextMatch)}" ${rowStyle}>
       <span role="cell" class="schedule__cell schedule__cell--photo">${photo}</span>
       ${playerCell}
       ${opponentCell}
@@ -221,8 +216,7 @@ async function main(): Promise<void> {
   const data = JSON.parse(raw) as SiteData;
 
   const sorted = sortResults(data.players);
-  const firstWithMatch = sorted.findIndex((r) => r.nextMatch?.startTime);
-  const rowsHtml = sorted.map((r, i) => renderRow(r, i === firstWithMatch)).join("\n");
+  const rowsHtml = sorted.map(renderRow).join("\n");
 
   const generatedAt = DateTime.fromISO(data.generatedAt).setZone("Europe/Berlin").setLocale("de").toFormat("cccc, dd.MM.yyyy · HH:mm 'Uhr'");
 

@@ -71,7 +71,7 @@ function parseNextMatch($: CheerioAPI, player: PlayerConfig): NextMatch | null {
       tournamentUrl,
       round: "Auslosung offen",
       startTime: null,
-      startDisplay: "Termin steht noch nicht fest",
+      startDisplay: "Termin offen",
       opponent: "noch offen",
       opponentRank: null,
       matchUrl: null,

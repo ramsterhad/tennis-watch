@@ -15,6 +15,9 @@
   --ink-soft: #46564c;
   --chalk: #faf9f4;
   --chalk-dim: #f0eee4;
+  /* Always light, unlike --chalk — for text sitting on the header's/active
+     filter's fixed dark-green background, which doesn't flip with the theme. */
+  --chalk-fixed: #faf9f4;
   --line: #dfdccf;
   --card-bg: #ffffff;
   --radius: 10px;
@@ -68,7 +71,7 @@ img {
 ------------------------------------------------------------------------ */
 .board-header {
   background: linear-gradient(160deg, var(--court-grass-dark), var(--court-grass) 70%);
-  color: var(--chalk);
+  color: var(--chalk-fixed);
   padding: 2.75rem 1.5rem 2.25rem;
   position: relative;
   overflow: hidden;
@@ -130,7 +133,7 @@ img {
 }
 
 .board-header__meta strong {
-  color: var(--chalk);
+  color: var(--chalk-fixed);
   font-weight: 600;
 }
 
@@ -140,7 +143,7 @@ img {
 .filters {
   max-width: 72rem;
   margin: 0 auto;
-  padding: 1.5rem 1.5rem 0;
+  padding: 1.5rem 1.5rem 1.5rem;
   display: flex;
   gap: 0.5rem;
 }
@@ -161,7 +164,7 @@ img {
 .filters button[aria-pressed="true"] {
   background: var(--court-grass);
   border-color: var(--court-grass);
-  color: var(--chalk);
+  color: var(--chalk-fixed);
 }
 
 .filters button:focus-visible,
@@ -185,7 +188,7 @@ a:focus-visible {
 
 .schedule__grid {
   display: grid;
-  grid-template-columns: 56px minmax(150px, 1.3fr) minmax(150px, 1.3fr) minmax(160px, 1.5fr) minmax(130px, 1fr) minmax(140px, 1.2fr);
+  grid-template-columns: 56px minmax(150px, 1.3fr) minmax(150px, 1.3fr) minmax(160px, 1.5fr) minmax(175px, 1fr) minmax(140px, 1.2fr);
   background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -219,10 +222,7 @@ a:focus-visible {
   color: var(--ink-soft);
   padding: 0.9rem 0.6rem 0.7rem;
   border-bottom: 2px solid var(--line);
-}
-
-.schedule__row--next .schedule__cell {
-  background: color-mix(in srgb, var(--surface-color, var(--card-bg)) 26%, var(--card-bg));
+  text-align: center;
 }
 
 .schedule__row[data-has-match="false"] .schedule__cell {
@@ -237,6 +237,14 @@ a:focus-visible {
 
 .schedule__cell--wide {
   grid-column: span 4;
+}
+
+.schedule__cell--player {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .schedule__photo {
@@ -275,11 +283,23 @@ span.schedule__name {
   text-decoration: none;
 }
 
-.schedule__meta {
+.schedule__rank,
+.schedule__country {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.03em;
   color: var(--ink-soft);
+}
+
+.schedule__cell--event {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .schedule__tournament {
@@ -293,9 +313,7 @@ span.schedule__name {
 
 .schedule__surface {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
   color: var(--surface-color, var(--ink-soft));
   font-weight: 600;
 }
@@ -303,20 +321,7 @@ span.schedule__name {
 .schedule__cell--date {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-}
-
-.schedule__badge {
-  align-self: flex-start;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink);
-  background: var(--ball);
-  border-radius: 999px;
-  padding: 0.15rem 0.5rem;
-  margin-bottom: 0.1rem;
+  white-space: nowrap;
 }
 
 .schedule__cell--broadcast {
@@ -413,6 +418,16 @@ span.schedule__name {
   .schedule__cell--broadcast,
   .schedule__cell--wide {
     grid-column: 1 / -1;
+  }
+  .schedule__cell--opponent,
+  .schedule__cell--event {
+    flex-wrap: wrap;
+    row-gap: 0.15rem;
+    white-space: normal;
+  }
+  .schedule__cell--opponent::before,
+  .schedule__cell--event::before {
+    flex-basis: 100%;
   }
   .schedule__cell--opponent::before {
     content: "Kontrahent";
