@@ -135,66 +135,74 @@ function formatMatchTime(iso: string | null, fallbackDisplay: string): string {
   return `${weekday}. ${dt.toFormat("dd.MM.")} · ${dt.toFormat("HH:mm")} Uhr`;
 }
 
-function renderCard(result: PlayerResult): string {
+function renderRow(result: PlayerResult, isNext: boolean): string {
   const { player, nextMatch, currentRank, country, broadcast, photoPath, error } = result;
   const surface = nextMatch ? inferSurface(nextMatch.tournament) : null;
-  const surfaceStyle = surface ? `style="--surface-color:${SURFACE_VAR[surface]}"` : "";
-
-  const code = countryCode(country);
-  const metaParts = [code ? escapeHtml(code) : null, currentRank ? `#${currentRank}` : null].filter(Boolean) as string[];
-  if (surface) {
-    metaParts.push(`<span class="card__surface">${SURFACE_LABEL[surface]}</span>`);
-  }
-  const metaLine = metaParts.length > 0 ? `<p class="card__tour">${metaParts.join(" &middot; ")}</p>` : "";
+  const rowStyle = surface ? `style="--surface-color:${SURFACE_VAR[surface]}"` : "";
 
   const photo = photoPath
-    ? `<img class="card__photo" src="${escapeHtml(photoPath)}" alt="${escapeHtml(player.name)}" loading="lazy" />`
-    : `<div class="card__photo card__photo--placeholder">${escapeHtml(initialsOf(player.name))}</div>`;
+    ? `<img class="schedule__photo" src="${escapeHtml(photoPath)}" alt="${escapeHtml(player.name)}" loading="lazy" />`
+    : `<div class="schedule__photo schedule__photo--placeholder">${escapeHtml(initialsOf(player.name))}</div>`;
 
-  let matchBlock: string;
+  const playerLink = playerProfileUrl(player);
+  const code = countryCode(country);
+  const playerMetaParts = [code ? escapeHtml(code) : null, currentRank ? `#${currentRank}` : null].filter(Boolean) as string[];
+  const playerCell = `
+    <span role="cell" class="schedule__cell schedule__cell--player">
+      <a class="schedule__name" href="${escapeHtml(playerLink)}" target="_blank" rel="noopener">${escapeHtml(player.name)}</a>
+      ${playerMetaParts.length > 0 ? `<span class="schedule__meta">${playerMetaParts.join(" &middot; ")}</span>` : ""}
+    </span>`;
+
+  let opponentCell: string;
+  let eventCell = "";
+  let dateCell = "";
+  let broadcastCell = "";
+
   if (error) {
-    matchBlock = `<div class="card__match"><p class="card__error">Daten gerade nicht verfügbar — wird beim nächsten nächtlichen Update erneut versucht.</p></div>`;
+    opponentCell = `<span role="cell" class="schedule__cell schedule__cell--wide"><span class="schedule__error">Daten gerade nicht verfügbar — wird beim nächsten nächtlichen Update erneut versucht.</span></span>`;
   } else if (!nextMatch) {
-    matchBlock = `<div class="card__match"><p class="card__empty">Kein Spiel angesetzt.</p></div>`;
+    opponentCell = `<span role="cell" class="schedule__cell schedule__cell--wide"><span class="schedule__empty">Kein Spiel angesetzt.</span></span>`;
   } else {
+    const opponentRank = nextMatch.opponentRank ?? null;
+    const opponentLabel = nextMatch.matchUrl
+      ? `<a class="schedule__name" href="${escapeHtml(nextMatch.matchUrl)}" target="_blank" rel="noopener">${escapeHtml(nextMatch.opponent)}</a>`
+      : `<span class="schedule__name">${escapeHtml(nextMatch.opponent)}</span>`;
+    opponentCell = `
+      <span role="cell" class="schedule__cell schedule__cell--player schedule__cell--opponent">
+        ${opponentLabel}
+        ${opponentRank ? `<span class="schedule__meta">#${opponentRank}</span>` : ""}
+      </span>`;
+
+    const tournamentLabel = nextMatch.tournamentUrl
+      ? `<a class="schedule__tournament" href="${escapeHtml(nextMatch.tournamentUrl)}" target="_blank" rel="noopener">${escapeHtml(nextMatch.tournament)}</a>`
+      : `<span class="schedule__tournament">${escapeHtml(nextMatch.tournament)}</span>`;
+    eventCell = `
+      <span role="cell" class="schedule__cell schedule__cell--event">
+        ${tournamentLabel}
+        ${surface ? `<span class="schedule__surface">${SURFACE_LABEL[surface]}</span>` : ""}
+      </span>`;
+
+    dateCell = `
+      <span role="cell" class="schedule__cell schedule__cell--date">
+        ${isNext ? `<span class="schedule__badge">Nächstes</span>` : ""}
+        ${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}
+      </span>`;
+
     const broadcastChips = broadcast && broadcast.broadcasters.length > 0
       ? broadcast.broadcasters.map((b) => `<span class="chip">${escapeHtml(b)}</span>`).join("")
       : `<span class="chip">Sender unbekannt</span>`;
-
-    const tournamentLabel = nextMatch.tournamentUrl
-      ? `<a class="card__tournament" href="${escapeHtml(nextMatch.tournamentUrl)}" target="_blank" rel="noopener">${escapeHtml(nextMatch.tournament)}</a>`
-      : `<span class="card__tournament">${escapeHtml(nextMatch.tournament)}</span>`;
-
-    const opponentLabel = nextMatch.matchUrl
-      ? `<a href="${escapeHtml(nextMatch.matchUrl)}" target="_blank" rel="noopener">${escapeHtml(nextMatch.opponent)}</a>`
-      : escapeHtml(nextMatch.opponent);
-
-    matchBlock = `
-      <div class="card__match">
-        ${tournamentLabel}
-        <p class="card__vs">vs ${opponentLabel}</p>
-        <div class="card__logistics">
-          <span class="card__time">${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}</span>
-          ${broadcastChips}
-        </div>
-      </div>`;
+    broadcastCell = `<span role="cell" class="schedule__cell schedule__cell--broadcast">${broadcastChips}</span>`;
   }
 
-  const playerLink = playerProfileUrl(player);
-
   return `
-    <article class="card" data-tour="${player.tour}" data-has-match="${Boolean(nextMatch)}" ${surfaceStyle}>
-      <div class="card__body">
-        <div class="card__player">
-          ${photo}
-          <div>
-            <p class="card__name"><a href="${escapeHtml(playerLink)}" target="_blank" rel="noopener">${escapeHtml(player.name)}</a></p>
-            ${metaLine}
-          </div>
-        </div>
-        ${matchBlock}
-      </div>
-    </article>`;
+    <div class="schedule__row${isNext ? " schedule__row--next" : ""}" role="row" data-tour="${player.tour}" data-has-match="${Boolean(nextMatch)}" ${rowStyle}>
+      <span role="cell" class="schedule__cell schedule__cell--photo">${photo}</span>
+      ${playerCell}
+      ${opponentCell}
+      ${eventCell}
+      ${dateCell}
+      ${broadcastCell}
+    </div>`;
 }
 
 function sortResults(results: PlayerResult[]): PlayerResult[] {
@@ -213,7 +221,8 @@ async function main(): Promise<void> {
   const data = JSON.parse(raw) as SiteData;
 
   const sorted = sortResults(data.players);
-  const cardsHtml = sorted.map(renderCard).join("\n");
+  const firstWithMatch = sorted.findIndex((r) => r.nextMatch?.startTime);
+  const rowsHtml = sorted.map((r, i) => renderRow(r, i === firstWithMatch)).join("\n");
 
   const generatedAt = DateTime.fromISO(data.generatedAt).setZone("Europe/Berlin").setLocale("de").toFormat("cccc, dd.MM.yyyy · HH:mm 'Uhr'");
 
@@ -221,7 +230,7 @@ async function main(): Promise<void> {
   template = template
     .replace("{{GENERATED_AT}}", escapeHtml(generatedAt))
     .replace("{{COUNT_TOTAL}}", String(data.players.length))
-    .replace("{{CARDS}}", cardsHtml);
+    .replace("{{ROWS}}", rowsHtml);
 
   await fs.mkdir(PUBLIC_DIR, { recursive: true });
   await fs.writeFile(path.join(PUBLIC_DIR, "index.html"), template, "utf-8");

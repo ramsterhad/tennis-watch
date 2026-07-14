@@ -171,48 +171,77 @@ a:focus-visible {
 }
 
 /* ---------------------------------------------------------------------
-   Card grid
+   Schedule table — an "order of play" board read top to bottom: the next
+   match to happen sits at the top, everything else follows in the order
+   it comes due. Each row's background carries the court surface (grass/
+   clay/hard) as a quiet, immediate cue — the same signal a printed order
+   of play gives you with a court number, just recolored per surface.
 ------------------------------------------------------------------------ */
-.grid {
+.schedule {
   max-width: 72rem;
-  margin: 0 auto;
-  padding: 1.5rem 1.5rem 3.5rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.1rem;
+  margin: 0 auto 3.5rem;
+  padding: 0 1.5rem;
 }
 
-.card {
+.schedule__grid {
+  display: grid;
+  grid-template-columns: 56px minmax(150px, 1.3fr) minmax(150px, 1.3fr) minmax(160px, 1.5fr) minmax(130px, 1fr) minmax(140px, 1.2fr);
   background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
+}
+
+.schedule__row {
+  display: contents;
+}
+
+.schedule__cell {
   display: flex;
   flex-direction: column;
-  border-top: 5px solid var(--surface-color, var(--ink-soft));
+  justify-content: center;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.9rem 0.6rem;
+  background: color-mix(in srgb, var(--surface-color, var(--card-bg)) 15%, var(--card-bg));
+  border-bottom: 1px solid var(--line);
 }
 
-.card[data-has-match="false"] {
-  opacity: 0.72;
+.schedule__row--head .schedule__cell {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--card-bg);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  padding: 0.9rem 0.6rem 0.7rem;
+  border-bottom: 2px solid var(--line);
 }
 
-.card__body {
-  padding: 1.1rem 1.2rem 1.3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  flex: 1;
+.schedule__row--next .schedule__cell {
+  background: color-mix(in srgb, var(--surface-color, var(--card-bg)) 26%, var(--card-bg));
 }
 
-.card__player {
-  display: flex;
+.schedule__row[data-has-match="false"] .schedule__cell {
+  opacity: 0.65;
+}
+
+.schedule__cell--photo {
+  border-left: 4px solid var(--surface-color, transparent);
+  padding-left: calc(0.6rem - 4px);
   align-items: center;
-  gap: 0.85rem;
 }
 
-.card__photo {
-  width: 56px;
-  height: 56px;
+.schedule__cell--wide {
+  grid-column: span 4;
+}
+
+.schedule__photo {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
   /* Wikipedia infobox photos are usually tall portrait/action shots with the
@@ -223,39 +252,46 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-.card__photo--placeholder {
+.schedule__photo--placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
 }
 
-.card__name {
+.schedule__name {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 600;
-  margin: 0;
   letter-spacing: 0.01em;
-}
-
-.card__name a,
-.card__vs a {
   text-decoration: underline;
   text-decoration-color: var(--line);
   text-underline-offset: 2px;
 }
 
-.card__tour {
+span.schedule__name {
+  text-decoration: none;
+}
+
+.schedule__meta {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
   color: var(--ink-soft);
 }
 
-.card__surface {
+.schedule__tournament {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--ink);
+}
+
+.schedule__surface {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   text-transform: uppercase;
@@ -264,54 +300,33 @@ a:focus-visible {
   font-weight: 600;
 }
 
-.card__match {
-  border-top: 1px dashed var(--line);
-  padding-top: 0.8rem;
-}
-
-.card__tournament {
-  /* Styled like the surface/broadcast chips elsewhere on the card — a tag reads
-     as "metadata about the match", keeping it visually distinct from the vs-line
-     headline below, which is the actual fact ("who"). */
-  display: inline-block;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  font-size: 0.65rem;
-  color: var(--ink-soft);
-  background: var(--chalk-dim);
-  border-radius: 4px;
-  padding: 0.15rem 0.5rem;
-  margin: 0 0 0.5rem;
-}
-
-.card__vs {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.15rem;
-  letter-spacing: 0.01em;
-  margin: 0 0 0.7rem;
-}
-
-.card__logistics {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.card__time {
+.schedule__cell--date {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  background: var(--chalk-dim);
-  border-radius: 6px;
-  padding: 0.35rem 0.6rem;
-  display: inline-block;
 }
 
-.card__empty {
-  font-size: 0.88rem;
+.schedule__badge {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: var(--ball);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  margin-bottom: 0.1rem;
+}
+
+.schedule__cell--broadcast {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.schedule__empty {
+  font-size: 0.85rem;
   color: var(--ink-soft);
   font-style: italic;
 }
@@ -328,7 +343,7 @@ a:focus-visible {
   color: var(--ink);
 }
 
-.card__error {
+.schedule__error {
   font-size: 0.8rem;
   color: var(--court-clay);
 }
@@ -350,24 +365,85 @@ a:focus-visible {
   text-decoration-color: var(--line);
 }
 
-@media (max-width: 420px) {
-  .board-header {
-    padding: 2rem 1.1rem 1.75rem;
+/* ---------------------------------------------------------------------
+   Small screens — the six-column grid collapses into stacked key/value
+   rows per player; column labels come back as generated content since
+   the header row (sticky, meant for a wide layout) is hidden here.
+------------------------------------------------------------------------ */
+@media (max-width: 720px) {
+  .schedule {
+    padding: 0 1.1rem;
   }
-  .grid {
-    grid-template-columns: 1fr;
-    padding: 1.25rem 1.1rem 2.5rem;
+  .schedule__grid {
+    display: block;
+    box-shadow: none;
+    background: none;
+    border-radius: 0;
   }
-  .filters {
-    padding: 1.25rem 1.1rem 0;
+  .schedule__row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.9rem;
+    row-gap: 0.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.9rem;
+  }
+  .schedule__row--head {
+    display: none;
+  }
+  .schedule__cell {
+    padding: 0;
+    background: none;
+    border-bottom: none;
+  }
+  .schedule__cell--photo {
+    border-left: none;
+    padding-left: 0.6rem;
+    box-shadow: inset 4px 0 0 var(--surface-color, transparent);
+  }
+  .schedule__cell--player {
+    grid-column: 2;
+  }
+  .schedule__cell--opponent,
+  .schedule__cell--event,
+  .schedule__cell--date,
+  .schedule__cell--broadcast,
+  .schedule__cell--wide {
+    grid-column: 1 / -1;
+  }
+  .schedule__cell--opponent::before {
+    content: "Kontrahent";
+  }
+  .schedule__cell--event::before {
+    content: "Event";
+  }
+  .schedule__cell--date::before {
+    content: "Datum";
+  }
+  .schedule__cell--broadcast::before {
+    content: "Wo läuft's";
+  }
+  .schedule__cell--opponent::before,
+  .schedule__cell--event::before,
+  .schedule__cell--date::before,
+  .schedule__cell--broadcast::before {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  .schedule__cell--broadcast {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .card {
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .card:hover {
-    transform: translateY(-2px);
+  .schedule__row {
+    transition: background-color 0.15s ease;
   }
 }

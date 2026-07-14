@@ -19,6 +19,8 @@ export interface NextMatch {
   /** Human-readable date/time already formatted for Europe/Berlin, for display fallback */
   startDisplay: string;
   opponent: string;
+  /** Current ATP/WTA singles ranking of the opponent, or null if unranked/not found/not yet resolved */
+  opponentRank: number | null;
   /** tennisexplorer.com match-detail page for this specific matchup, or null if the opponent isn't known yet */
   matchUrl: string | null;
 }
