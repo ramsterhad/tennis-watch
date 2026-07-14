@@ -148,7 +148,7 @@ function formatMatchTime(iso: string | null, fallbackDisplay: string): string {
   }
   const dt = DateTime.fromISO(iso).setZone("Europe/Berlin");
   const weekday = dt.setLocale("de").toFormat("ccc");
-  return `${weekday}. ${dt.toFormat("dd.MM.")} · ${dt.toFormat("HH:mm")}`;
+  return `${weekday}. ${dt.toFormat("dd.MM.")} ${dt.toFormat("HH:mm")}`;
 }
 
 function renderRow(result: PlayerResult): string {
