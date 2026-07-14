@@ -165,8 +165,8 @@ function renderRow(result: PlayerResult): string {
   const playerCell = `
     <span role="cell" class="schedule__cell schedule__cell--player">
       <a class="schedule__name" href="${escapeHtml(playerLink)}" target="_blank" rel="noopener">${escapeHtml(player.name)}</a>
-      ${currentRank ? `<span class="schedule__rank">${currentRank}</span>` : ""}
       ${code ? `<span class="schedule__country">${escapeHtml(code)}</span>` : ""}
+      ${currentRank ? `<span class="schedule__rank">${currentRank}</span>` : ""}
     </span>`;
 
   let opponentCell: string;
