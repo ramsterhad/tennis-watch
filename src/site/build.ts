@@ -117,7 +117,6 @@ function inferSurface(tournament: string): Surface {
   return "hard";
 }
 
-const SURFACE_LABEL: Record<Surface, string> = { grass: "Gras", clay: "Sand", hard: "Halle" };
 const SURFACE_VAR: Record<Surface, string> = {
   grass: "var(--court-grass)",
   clay: "var(--court-clay)",
@@ -194,7 +193,7 @@ function renderRow(result: PlayerResult): string {
       : `<span class="schedule__tournament">${escapeHtml(nextMatch.tournament)}</span>`;
     eventCell = `
       <span role="cell" class="schedule__cell schedule__cell--event">
-        ${tournamentLabel}${surface ? ` <span class="schedule__surface">(${SURFACE_LABEL[surface]})</span>` : ""}
+        ${tournamentLabel}
       </span>`;
 
     dateCell = `<span role="cell" class="schedule__cell schedule__cell--date">${escapeHtml(formatMatchTime(nextMatch.startTime, nextMatch.startDisplay))}</span>`;

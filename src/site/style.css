@@ -305,13 +305,6 @@ span.schedule__name {
   color: var(--ink);
 }
 
-.schedule__surface {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--surface-color, var(--ink-soft));
-  font-weight: 600;
-}
-
 .schedule__cell--date {
   font-family: var(--font-mono);
   font-size: 0.85rem;
@@ -476,6 +469,8 @@ a.chip:hover {
     font-size: 0.72rem;
   }
   .schedule__cell--date {
+    align-items: center;
+    text-align: center;
     font-size: 0.72rem;
   }
   .schedule__cell--broadcast {
