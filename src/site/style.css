@@ -196,6 +196,8 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   gap: 0.15rem;
   min-width: 0;
   padding: 0.9rem 0.6rem;
@@ -234,7 +236,7 @@ a:focus-visible {
 
 .schedule__cell--player {
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -436,9 +438,9 @@ a.chip:hover {
   .schedule__cell--date,
   .schedule__cell--broadcast {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: flex-start;
-    text-align: left;
+    text-align: center;
     white-space: normal;
     gap: 0.1rem;
   }
@@ -470,8 +472,6 @@ a.chip:hover {
     font-size: 0.72rem;
   }
   .schedule__cell--date {
-    align-items: center;
-    text-align: center;
     font-size: 0.72rem;
   }
   .schedule__cell--broadcast {
