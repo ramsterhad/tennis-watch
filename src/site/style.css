@@ -443,7 +443,7 @@ a.chip:hover {
     gap: 0.1rem;
   }
   .schedule__cell--opponent::before {
-    content: "Kontrahent";
+    content: "VS";
   }
   .schedule__cell--event::before {
     content: "Event";
