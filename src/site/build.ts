@@ -166,7 +166,7 @@ function renderRow(result: PlayerResult): string {
     <span role="cell" class="schedule__cell schedule__cell--player">
       <a class="schedule__name" href="${escapeHtml(playerLink)}" target="_blank" rel="noopener">${escapeHtml(player.name)}</a>
       ${code ? `<span class="schedule__country">${escapeHtml(code)}</span>` : ""}
-      ${currentRank ? `<span class="schedule__rank">${currentRank}</span>` : ""}
+      ${currentRank ? `<span class="schedule__rank">#${currentRank}</span>` : ""}
     </span>`;
 
   let opponentCell: string;
@@ -186,7 +186,7 @@ function renderRow(result: PlayerResult): string {
     opponentCell = `
       <span role="cell" class="schedule__cell schedule__cell--player schedule__cell--opponent">
         ${opponentLabel}
-        ${opponentRank ? `<span class="schedule__rank">${opponentRank}</span>` : ""}
+        ${opponentRank ? `<span class="schedule__rank">#${opponentRank}</span>` : ""}
       </span>`;
 
     const tournamentLabel = nextMatch.tournamentUrl
